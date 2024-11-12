@@ -1,0 +1,73 @@
+/* Background and container styling */
+.signup-page {
+    background-image: url('../../assets/PuzzleAnimation.gif');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* White, rounded container */
+  .signup-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    width: 350px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* Title styling */
+  .signup-title {
+    font-size: 2rem;
+    font-family: Arial, sans-serif;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  
+  /* Form input styling */
+  .signup-form label {
+    display: block;
+    text-align: left;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .signup-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .signup-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffcc00;
+    color: #000;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  /* Login link */
+  .login-link {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 15px;
+  }
+  
+  .login-link-text {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+  
