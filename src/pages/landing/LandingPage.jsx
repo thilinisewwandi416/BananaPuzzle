@@ -7,7 +7,6 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up an interval to increase the progress bar value
     const interval = setInterval(() => {
       setProgress(prevProgress => {
         if (prevProgress >= 100) {
@@ -18,14 +17,13 @@ const LandingPage = () => {
       });
     }, 50);
 
-    // Redirect to /login when progress reaches 100%
     if (progress === 100) {
       setTimeout(() => {
         navigate('/login');
       }, 500);
     }
 
-    return () => clearInterval(interval); // Clean up interval on component unmount
+    return () => clearInterval(interval); 
   }, [progress, navigate]);
 
   return (

@@ -1,118 +1,142 @@
-/* Background and container styling */
 .login-page {
-    background-image: url('../../assets/PuzzleAnimation.gif'); 
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* White, rounded container */
+  background-image: url('../../assets/PuzzleAnimation.gif');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 350px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-family: Arial, sans-serif;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+.login-form label {
+  display: block;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #ffcc00;
+  color: #000;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.sign-up {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.signup-link-text {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.social-login {
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: 15px;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.social-icons a img {
+  width: 24px;
+  height: 24px;
+}
+
+@media (max-width: 768px) {
   .login-container {
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 12px;
-    width: 350px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    padding: 30px;
+    max-width: 90%;
   }
-  
-  /* Title styling */
+
   .login-title {
-    font-size: 2rem;
-    font-family: Arial, sans-serif;
-    color: #000;
-    margin-bottom: 20px;
+    font-size: 1.8rem;
   }
-  
-  
-  /* Form input styling */
+
   .login-form label {
-    display: block;
-    text-align: left;
+    font-size: 0.85rem;
+  }
+
+  .login-form input, .login-button {
     font-size: 0.9rem;
-    color: #333;
-    margin-bottom: 5px;
   }
-  
-  .login-form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+
+  .social-icons img {
+    width: 22px;
+    height: 22px;
   }
-  
-  .forgot-password {
-    display: block;
-    text-align: right;
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .login-title {
+    font-size: 1.6rem;
+  }
+
+  .login-form label {
     font-size: 0.8rem;
-    color: #007bff;
-    margin-bottom: 20px;
   }
-  
-  /* Login button styling */
-  .login-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #ffcc00;
-    color: #000;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-  
-  /* Sign-up link */
-  .sign-up {
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
-  .sign-up-link {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 5px;
-  }
-  
-  /* Social login section */
-  .social-login {
+
+  .login-form input, .login-button {
     font-size: 0.8rem;
-    color: #555;
-    margin-top: 15px;
   }
-  
-  .social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
+
+  .social-icons img {
+    width: 20px;
+    height: 20px;
   }
-  
-  .social-icons a img {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .social-icons a span {
-    background-color: #d9d9d9;
-    width: 24px;
-    height: 24px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 1rem;
-  }
-  
-  .signup-link-text {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 5px;
-  }
+}
