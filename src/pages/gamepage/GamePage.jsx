@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Timer from '../../components/timer/Timer';
-import PopupModal from '../../components/popup/PopUp';
+import PopupModal from '../../components/popup/PopUp'; 
 import './GamePage.css';
 
 const GamePage = () => {
@@ -9,9 +9,12 @@ const GamePage = () => {
   const [options, setOptions] = useState([]);
   const [solution, setSolution] = useState(null);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const [attempts, setAttempts] = useState(3);
+  const [attempts, setAttempts] = useState(3); 
   const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [isTimeUpModalVisible, setIsTimeUpModalVisible] = useState(false);
+  const [isTimeUpModalVisible, setIsTimeUpModalVisible] = useState(false); 
+  const [timeUp, setTimeUp] = useState(false);
+  const [isWrongAnswerModalVisible, setIsWrongAnswerModalVisible] = useState(false); 
+  const [timerPaused, setTimerPaused] = useState(false);
 
   useEffect(() => {
     const fetchPuzzleImage = async () => {
@@ -34,13 +37,21 @@ const GamePage = () => {
   }, []);
 
   const handleTimeUp = () => {
-    setButtonsDisabled(true);
-    setFeedbackMessage("Time's up!");
-    setIsTimeUpModalVisible(true);
+    if (!timeUp) {
+      setButtonsDisabled(true);
+      setFeedbackMessage("Time's up!");
+      setIsTimeUpModalVisible(true);
+      setTimeUp(true); 
+    }
   };
 
   const closeTimeUpModal = () => {
     setIsTimeUpModalVisible(false);
+  };
+
+  const closeWrongAnswerModal = () => {
+    setIsWrongAnswerModalVisible(false);
+    setTimerPaused(false);
   };
 
   const handleOptionClick = (selectedOption) => {
@@ -54,6 +65,8 @@ const GamePage = () => {
         setButtonsDisabled(true);
         setFeedbackMessage("No more attempts left.");
       }
+      setIsWrongAnswerModalVisible(true);
+      setTimerPaused(true);
     }
   };
 
@@ -78,14 +91,14 @@ const GamePage = () => {
         <div className="icon left-icon">🏅</div>
         <div className="icon right-icon">
           {Array.from({ length: attempts }).map((_, index) => (
-            <span key={index} className="heart">❤️</span>
+            <span key={index} className="heart">❤️</span> 
           ))}
         </div>
       </header>
 
       {puzzleImage ? (
         <div className="puzzle-container">
-          <Timer initialTime={30} onTimeUp={handleTimeUp} />
+          <Timer initialTime={30} onTimeUp={handleTimeUp} pause={timerPaused} />
           <img src={puzzleImage} alt="Puzzle" className="puzzle-image" />
         </div>
       ) : (
@@ -113,9 +126,12 @@ const GamePage = () => {
         <button className="button next-button">NEXT</button>
       </div>
 
-      {/* Display PopupModal when time is up */}
       {isTimeUpModalVisible && (
         <PopupModal message="Time's up!" onClose={closeTimeUpModal} />
+      )}
+
+      {isWrongAnswerModalVisible && (
+        <PopupModal message="Wrong answer. Try again!" onClose={closeWrongAnswerModal} />
       )}
     </div>
   );
