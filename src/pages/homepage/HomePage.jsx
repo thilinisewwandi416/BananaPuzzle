@@ -1,8 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import characterImage from '../../assets/boyimage.png';
+import HowToPlay from '../../components/howtoplay/HowToPlay';
+
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const [isHowToPlayVisible, setHowToPlayVisible] = useState(false);
+
+  const handlePlayClick  = () => {
+    navigate('/gamepage');
+  };
+
+  const handleLogoutClick = () => {
+    navigate('/login')
+  }
+
+  const handleHowToPlay = () => {
+    setHowToPlayVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setHowToPlayVisible(false);
+  };
+
   return (
     <div className="homepage">
       <div className="character">
@@ -10,10 +32,11 @@ const HomePage = () => {
         <div className="bubble">Hey there!</div>
       </div>
       <div className="buttons">
-        <button className="button play">PLAY</button>
-        <button className="button pause">PAUSE</button>
-        <button className="button exit">EXIT</button>
+        <button className="button play" onClick={handlePlayClick}>PLAY</button>
+        <button className="button instructions" onClick={handleHowToPlay}>HOW TO PLAY</button>
+        <button className="button exit" onClick={handleLogoutClick}>EXIT</button>
       </div>
+      <HowToPlay isVisible={isHowToPlayVisible} onClose={handleCloseModal} />
     </div>
   );
 };
