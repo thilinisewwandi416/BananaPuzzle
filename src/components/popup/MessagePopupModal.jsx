@@ -1,7 +1,7 @@
 import React from 'react';
-import './PopUp.css';
+import './MessagePopupModal.css';
 
-const PopupModal = ({ message, onClose }) => {
+const MessagePopupModal = ({ message, onClose }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -12,4 +12,4 @@ const PopupModal = ({ message, onClose }) => {
   );
 };
 
-export default PopupModal;
+export default MessagePopupModal;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Timer from '../../components/timer/Timer';
-import PopupModal from '../../components/popup/PopUp'; 
+import MessagePopupModal from '../../components/popup/MessagePopupModal'; 
+import LeaderboardModal from '../../components/leaderboard/LeaderboardModal'; 
 import './GamePage.css';
 
 const GamePage = () => {
@@ -15,6 +16,8 @@ const GamePage = () => {
   const [timeUp, setTimeUp] = useState(false);
   const [isWrongAnswerModalVisible, setIsWrongAnswerModalVisible] = useState(false); 
   const [timerPaused, setTimerPaused] = useState(false);
+  
+  const [isLeaderboardVisible, setIsLeaderboardVisible] = useState(false);
 
   useEffect(() => {
     const fetchPuzzleImage = async () => {
@@ -85,10 +88,20 @@ const GamePage = () => {
     setOptions(shuffledOptions);
   };
 
+  const openLeaderboard = () => {
+    setIsLeaderboardVisible(true);
+    setTimerPaused(true);
+  };
+
+  const closeLeaderboard = () => {
+    setIsLeaderboardVisible(false);
+    setTimerPaused(false);
+  };
+
   return (
     <div className="game-page">
       <header className="game-header">
-        <div className="icon left-icon">🏅</div>
+        <div className="icon left-icon" onClick={openLeaderboard}>🏅</div> 
         <div className="icon right-icon">
           {Array.from({ length: attempts }).map((_, index) => (
             <span key={index} className="heart">❤️</span> 
@@ -127,11 +140,26 @@ const GamePage = () => {
       </div>
 
       {isTimeUpModalVisible && (
-        <PopupModal message="Time's up!" onClose={closeTimeUpModal} />
+        <MessagePopupModal message="Time's up!" onClose={closeTimeUpModal} />
       )}
 
       {isWrongAnswerModalVisible && (
-        <PopupModal message="Wrong answer. Try again!" onClose={closeWrongAnswerModal} />
+        <MessagePopupModal message="Wrong answer. Try again!" onClose={closeWrongAnswerModal} />
+      )}
+
+      {isLeaderboardVisible && (
+        <LeaderboardModal 
+          data={[
+            { username: 'Player 1', avatar: '', score: 1000 }, 
+            { username: 'Player 2', avatar: '', score: 900 },
+            { username: 'Player 3', avatar: '', score: 800 },
+            { username: 'Player 3', avatar: '', score: 700 },
+            { username: 'Player 3', avatar: '', score: 600 },
+            { username: 'Player 3', avatar: '', score: 500 }
+          ]}
+          isOpen={isLeaderboardVisible} 
+          onClose={closeLeaderboard} 
+        />
       )}
     </div>
   );

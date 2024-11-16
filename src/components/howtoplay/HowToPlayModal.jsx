@@ -1,7 +1,7 @@
 import React from 'react';
-import './HowToPlay.css';
+import './HowToPlayModal.css';
 
-const HowToPlay = ({ isVisible, onClose }) => {
+const HowToPlayModal = ({ isVisible, onClose }) => {
   if (!isVisible) return null;
 
   return (
@@ -24,4 +24,4 @@ const HowToPlay = ({ isVisible, onClose }) => {
   );
 };
 
-export default HowToPlay;
+export default HowToPlayModal;
