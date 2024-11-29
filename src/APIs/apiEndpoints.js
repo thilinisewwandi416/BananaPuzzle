@@ -11,7 +11,7 @@ export const userLogin = async (username, password) => {
     });
   };
 
-  export const userSignUp = async (firstname, lastname, username,email, password,country) => {
+  export const userSignUp = async (firstname, lastname, username,email,password,country) => {
     return await apiRequest({
       baseURL: BACKEND_API_BASE_URL,
       method: 'POST',
