@@ -4,7 +4,7 @@ import axios from 'axios';
 import MessagePopupModal from '../../components/popup/MessagePopupModal'; 
 import LeaderboardModal from '../../components/leaderboard/LeaderboardModal'; 
 import './GamePage.css';
-import { getLeaderBoardScores } from '../../APIs/apiEndpoints'; 
+import { getLeaderBoardScores, savePlayerScore } from '../../APIs/apiEndpoints'; 
 import Cookies from 'js-cookie';
 
 const GamePage = () => {
@@ -23,9 +23,12 @@ const GamePage = () => {
   const [score, setScore] = useState(0); 
   const [key, setKey] = useState(0);
 
-  // Fetch the username from cookies
   const getLoggedInUsername = () => {
     const username = Cookies.get('Username');
+    if (!username) {
+      console.error("Username not found. Please ensure you're logged in.");
+      return null;
+    }
     return username;
   };
 
@@ -64,7 +67,7 @@ const GamePage = () => {
     const username = getLoggedInUsername();
     if (username) {
       try {
-        await axios.post(`/api/Score/${username}/savescore`, { score });
+        await  savePlayerScore(username, score);;
         console.log('Score saved successfully!');
       } catch (error) {
         console.error("Error saving score:", error.message);
@@ -85,7 +88,8 @@ const GamePage = () => {
 
   const handleOptionClick = (selectedOption) => {
     if (selectedOption === solution) {
-      setScore(prevScore => prevScore + 100);
+      const calculatedScore = 100 + (50 * attempts); 
+      setScore(prevScore => prevScore + calculatedScore);
       setFeedbackMessage("Correct answer!");
 
       setButtonsDisabled(true);
@@ -181,7 +185,7 @@ const GamePage = () => {
       </div>
 
       <div className="navigation-buttons">
-        <button className="button back-button">BACK</button>
+        <button className="button back-button">EXIT</button>
         <div className="options">
           {options.map((option, index) => (
             <button
@@ -194,7 +198,6 @@ const GamePage = () => {
             </button>
           ))}
         </div>
-        <button className="button next-button">NEXT</button>
       </div>
 
       {isTimeUpModalVisible && (

@@ -8,6 +8,7 @@ export const userLogin = async (username, password) => {
       method: 'POST',
       endpoint: '/api/Player/login',
       data: { username, password },
+      
     });
   };
 
@@ -46,11 +47,12 @@ export const userLogin = async (username, password) => {
     });
   }
 
-  export const saveScore = async () => {
+  export const savePlayerScore = async (username, score) => {
     return await apiRequest({
       baseURL: BACKEND_API_BASE_URL,
       method: 'POST',
-      endpoint: '/api/Score/logout'
+      endpoint: `/api/Score/${username}/savescore`,
+      data:score ,
     });
   };
 
@@ -62,3 +64,11 @@ export const userLogin = async (username, password) => {
     });
   }
 
+  export const checkSession = async () => {
+    return await apiRequest({
+      baseURL: BACKEND_API_BASE_URL,
+      method: 'GET',
+      endpoint: '/api/Player/check-session',
+      withCredentials: true,
+    });
+  }
