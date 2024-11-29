@@ -12,4 +12,4 @@ const MessagePopupModal = ({ message, onClose }) => {
   );
 };
 
-export default MessagePopupModal;
+export default MessagePopupModal; 

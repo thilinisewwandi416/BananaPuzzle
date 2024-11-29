@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Timer from '../../components/timer/Timer';
+import axios from 'axios';
 import MessagePopupModal from '../../components/popup/MessagePopupModal'; 
 import LeaderboardModal from '../../components/leaderboard/LeaderboardModal'; 
 import './GamePage.css';
+import { getLeaderBoardScores } from '../../APIs/apiEndpoints'; 
+import Cookies from 'js-cookie';
 
 const GamePage = () => {
   const [puzzleImage, setPuzzleImage] = useState(null);
@@ -16,27 +18,36 @@ const GamePage = () => {
   const [timeUp, setTimeUp] = useState(false);
   const [isWrongAnswerModalVisible, setIsWrongAnswerModalVisible] = useState(false); 
   const [timerPaused, setTimerPaused] = useState(false);
-  
   const [isLeaderboardVisible, setIsLeaderboardVisible] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState([]); 
+  const [score, setScore] = useState(0); 
+  const [key, setKey] = useState(0);
+
+  // Fetch the username from cookies
+  const getLoggedInUsername = () => {
+    const username = Cookies.get('Username');
+    return username;
+  };
+
+  const fetchNewPuzzle = async () => {
+    try {
+      const response = await axios.get('https://marcconrad.com/uob/banana/api.php?out=json&base64=yes');
+      const imageData = response.data.question;
+      setPuzzleImage(`data:image/jpeg;base64,${imageData}`);
+
+      const apiNumber = parseInt(response.data.solution, 10);
+      setSolution(apiNumber);
+
+      generateOptions(apiNumber);
+
+      setKey(prevKey => prevKey + 1); 
+    } catch (error) {
+      console.error("Error fetching puzzle image:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchPuzzleImage = async () => {
-      try {
-        const response = await axios.get('https://marcconrad.com/uob/banana/api.php?out=json&base64=yes');
-        const imageData = response.data.question;
-
-        setPuzzleImage(`data:image/jpeg;base64,${imageData}`);
-
-        const apiNumber = parseInt(response.data.solution, 10);
-        setSolution(apiNumber);
-
-        generateOptions(apiNumber);
-      } catch (error) {
-        console.error("Error fetching puzzle image:", error);
-      }
-    };
-
-    fetchPuzzleImage();
+    fetchNewPuzzle(); 
   }, []);
 
   const handleTimeUp = () => {
@@ -45,6 +56,21 @@ const GamePage = () => {
       setFeedbackMessage("Time's up!");
       setIsTimeUpModalVisible(true);
       setTimeUp(true); 
+      saveScore(); 
+    }
+  };
+
+  const saveScore = async () => {
+    const username = getLoggedInUsername();
+    if (username) {
+      try {
+        await axios.post(`/api/Score/${username}/savescore`, { score });
+        console.log('Score saved successfully!');
+      } catch (error) {
+        console.error("Error saving score:", error.message);
+      }
+    } else {
+      console.error("No logged-in username found.");
     }
   };
 
@@ -59,14 +85,28 @@ const GamePage = () => {
 
   const handleOptionClick = (selectedOption) => {
     if (selectedOption === solution) {
+      setScore(prevScore => prevScore + 100);
       setFeedbackMessage("Correct answer!");
+
       setButtonsDisabled(true);
+
+      setAttempts(3);
+      setIsWrongAnswerModalVisible(false);
+
+      setTimeout(() => {
+        fetchNewPuzzle();
+        setButtonsDisabled(false); 
+        setTimeUp(false); 
+        setTimerPaused(false); 
+        setFeedbackMessage(''); 
+      }, 1000); 
     } else {
       setFeedbackMessage("Wrong answer. Try again!");
       setAttempts((prevAttempts) => prevAttempts - 1);
       if (attempts - 1 <= 0) {
         setButtonsDisabled(true);
         setFeedbackMessage("No more attempts left.");
+        saveScore();
       }
       setIsWrongAnswerModalVisible(true);
       setTimerPaused(true);
@@ -88,9 +128,18 @@ const GamePage = () => {
     setOptions(shuffledOptions);
   };
 
-  const openLeaderboard = () => {
-    setIsLeaderboardVisible(true);
-    setTimerPaused(true);
+  const openLeaderboard = async () => {
+    try {
+      setTimerPaused(true);
+  
+      const response = await getLeaderBoardScores();
+  
+      setLeaderboardData(response);
+      setIsLeaderboardVisible(true); 
+    } catch (error) {
+      console.error("Error fetching leaderboard data:", error.message);
+      setLeaderboardData([]); 
+    }
   };
 
   const closeLeaderboard = () => {
@@ -111,7 +160,12 @@ const GamePage = () => {
 
       {puzzleImage ? (
         <div className="puzzle-container">
-          <Timer initialTime={30} onTimeUp={handleTimeUp} pause={timerPaused} />
+          <Timer 
+            initialTime={30} 
+            onTimeUp={handleTimeUp} 
+            pause={timerPaused} 
+            key={key} 
+          />
           <img src={puzzleImage} alt="Puzzle" className="puzzle-image" />
         </div>
       ) : (
@@ -120,6 +174,10 @@ const GamePage = () => {
 
       <div className="feedback-message">
         {feedbackMessage}
+      </div>
+
+      <div className="current-score">
+        <h3>Score: {score}</h3> 
       </div>
 
       <div className="navigation-buttons">
@@ -149,14 +207,7 @@ const GamePage = () => {
 
       {isLeaderboardVisible && (
         <LeaderboardModal 
-          data={[
-            { username: 'Player 1', avatar: '', score: 1000 }, 
-            { username: 'Player 2', avatar: '', score: 900 },
-            { username: 'Player 3', avatar: '', score: 800 },
-            { username: 'Player 3', avatar: '', score: 700 },
-            { username: 'Player 3', avatar: '', score: 600 },
-            { username: 'Player 3', avatar: '', score: 500 }
-          ]}
+          data={leaderboardData} 
           isOpen={isLeaderboardVisible} 
           onClose={closeLeaderboard} 
         />
