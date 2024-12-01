@@ -30,11 +30,12 @@ export const userLogin = async (username, password) => {
     });
   };
 
-  export const resetPassword = async () => {
+  export const resetPassword = async (email, otp, newPassword) => {
     return await apiRequest({
       baseURL: BACKEND_API_BASE_URL,
       method: 'POST',
-      endpoint: '/api/Player/logout'
+      endpoint: '/api/Player/resetpassword',
+      data: {email, otp, newPassword}
     });
   };
 

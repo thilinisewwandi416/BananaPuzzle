@@ -52,7 +52,7 @@ const LoginPage = () => {
             required
           />
 
-          <a href="#" className="forgot-password">
+          <a href="/resetpassword" className="forgot-password">
             Forgot your password?
           </a>
 
