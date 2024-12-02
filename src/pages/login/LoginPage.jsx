@@ -18,6 +18,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
+      document.cookie = `username=${encodeURIComponent(username)}; path=/; max-age=86400;`;
       const response = await userLogin(username, password);
       navigate('/homepage');
     } catch (err) {

@@ -1,15 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ResetPassword.css";
-import { forgotPassword } from "../../APIs/apiEndpoints";
+import { forgotPassword, resetPassword } from "../../APIs/apiEndpoints";
+import PasswordResetModal from "../../components/passwordreset/PasswordResetModal";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
-  const [otp, setOtp] = useState(""); // New state for OTP
+  const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleEmailSubmit = async () => {
     setError("");
@@ -18,7 +23,7 @@ const ResetPassword = () => {
 
       if (response.returnStatus) {
         setEmailSubmitted(true);
-        setSuccessMessage(response.returnMessage); // Inform the user about OTP sent
+        setSuccessMessage(response.returnMessage);
       } else {
         throw new Error(response.returnMessage || "Please try again.");
       }
@@ -35,24 +40,28 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch(email,otp,password);
+      const response = await resetPassword(email, otp, password);
 
-      if (!response.ok) {
-        const res = await response.json();
-        throw new Error(res.message || "Failed to reset password. Please try again.");
+      if (response.returnStatus) {
+        setSuccessMessage(response.returnMessage);
+        setIsModalVisible(true); // Show modal
+      } else {
+        throw new Error(response.returnMessage || "Failed to reset password. Please try again.");
       }
-
-      setSuccessMessage("Password has been successfully reset!");
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
     }
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    navigate("/login"); 
   };
 
   return (
     <div className="reset-password-container">
       <h2>Reset Password</h2>
       {error && <p className="error-message">{error}</p>}
-      {successMessage && <p className="success-message">{successMessage}</p>}
       {!emailSubmitted ? (
         <>
           <div className="form-group">
@@ -109,6 +118,14 @@ const ResetPassword = () => {
             Reset Password
           </button>
         </>
+      )}
+
+      {isModalVisible && (
+        <PasswordResetModal
+          title="Success"
+          message={successMessage}
+          onClose={handleModalClose}
+        />
       )}
     </div>
   );

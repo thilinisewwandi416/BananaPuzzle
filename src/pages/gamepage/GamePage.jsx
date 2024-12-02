@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Timer from '../../components/timer/Timer';
 import axios from 'axios';
 import MessagePopupModal from '../../components/popup/MessagePopupModal'; 
 import LeaderboardModal from '../../components/leaderboard/LeaderboardModal'; 
 import './GamePage.css';
-import { getLeaderBoardScores, savePlayerScore } from '../../APIs/apiEndpoints'; 
+import { getLeaderBoardScores, savePlayerScore,userLogout } from '../../APIs/apiEndpoints'; 
 import Cookies from 'js-cookie';
 
 const GamePage = () => {
@@ -22,14 +23,26 @@ const GamePage = () => {
   const [leaderboardData, setLeaderboardData] = useState([]); 
   const [score, setScore] = useState(0); 
   const [key, setKey] = useState(0);
+  const [username, setUsername] = useState(null);
+  const navigate = useNavigate();
 
   const getLoggedInUsername = () => {
-    const username = Cookies.get('Username');
+    const username = Cookies.get('username');
     if (!username) {
       console.error("Username not found. Please ensure you're logged in.");
       return null;
     }
     return username;
+  };
+
+  const handleLogoutClick = async () => {
+    try {
+      document.cookie = "username=; path=/; max-age=0;";
+      await userLogout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   const fetchNewPuzzle = async () => {
@@ -185,7 +198,10 @@ const GamePage = () => {
       </div>
 
       <div className="navigation-buttons">
-        <button className="button back-button">EXIT</button>
+      <button 
+        className="button back-button"
+        onClick={handleLogoutClick}>EXIT
+      </button>
         <div className="options">
           {options.map((option, index) => (
             <button

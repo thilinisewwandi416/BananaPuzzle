@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import characterImage from '../../assets/boyimage.png';
 import HowToPlayModal from '../../components/howtoplay/HowToPlayModal';
+import {userLogout} from '../../APIs/apiEndpoints';
 
 
 const HomePage = () => {
@@ -13,9 +14,15 @@ const HomePage = () => {
     navigate('/gamepage');
   };
 
-  const handleLogoutClick = () => {
-    navigate('/login')
-  }
+  const handleLogoutClick = async () => {
+    try {
+      document.cookie = "username=; path=/; max-age=0;";
+      await userLogout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   const handleHowToPlay = () => {
     setHowToPlayVisible(true);

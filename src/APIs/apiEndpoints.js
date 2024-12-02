@@ -8,7 +8,7 @@ export const userLogin = async (username, password) => {
       method: 'POST',
       endpoint: '/api/Player/login',
       data: { username, password },
-      
+      withCredentials: true,
     });
   };
 
@@ -35,16 +35,16 @@ export const userLogin = async (username, password) => {
       baseURL: BACKEND_API_BASE_URL,
       method: 'POST',
       endpoint: '/api/Player/resetpassword',
-      data: {email, otp, newPassword}
+      data: {email, otp, newPassword},
     });
   };
 
-  export const userLogout = async ( email,otp,newPassword) => {
+  export const userLogout = async () => {
     return await apiRequest({
       baseURL: BACKEND_API_BASE_URL,
       method: 'POST',
-      endpoint: '/api/Player/resetpassword',
-      data: {email,otp,newPassword},
+      endpoint: '/api/Player/logout',
+      withCredentials: true,
     });
   }
 
