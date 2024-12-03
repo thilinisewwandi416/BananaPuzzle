@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Timer from '../../components/timer/Timer';
 import axios from 'axios';
-import MessagePopupModal from '../../components/popup/MessagePopupModal'; 
-import LeaderboardModal from '../../components/leaderboard/LeaderboardModal'; 
+import MessagePopupModal from '../../components/popup/MessagePopupModal';  // Importing MessagePopupModal
+import LeaderboardModal from '../../components/leaderboard/LeaderboardModal';
 import './GamePage.css';
-import { getLeaderBoardScores, savePlayerScore,userLogout } from '../../APIs/apiEndpoints'; 
+import { getLeaderBoardScores, savePlayerScore } from '../../APIs/apiEndpoints';
 import Cookies from 'js-cookie';
 
 const GamePage = () => {
@@ -13,17 +13,17 @@ const GamePage = () => {
   const [options, setOptions] = useState([]);
   const [solution, setSolution] = useState(null);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const [attempts, setAttempts] = useState(3); 
+  const [attempts, setAttempts] = useState(3);
   const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [isTimeUpModalVisible, setIsTimeUpModalVisible] = useState(false); 
-  const [timeUp, setTimeUp] = useState(false);
-  const [isWrongAnswerModalVisible, setIsWrongAnswerModalVisible] = useState(false); 
   const [timerPaused, setTimerPaused] = useState(false);
-  const [isLeaderboardVisible, setIsLeaderboardVisible] = useState(false);
-  const [leaderboardData, setLeaderboardData] = useState([]); 
-  const [score, setScore] = useState(0); 
+  const [score, setScore] = useState(0);
   const [key, setKey] = useState(0);
-  const [username, setUsername] = useState(null);
+
+  const [isTimeUpModalVisible, setIsTimeUpModalVisible] = useState(false);
+  const [isWrongAnswerModalVisible, setIsWrongAnswerModalVisible] = useState(false);
+  const [isLeaderboardVisible, setIsLeaderboardVisible] = useState(false);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+
   const navigate = useNavigate();
 
   const getLoggedInUsername = () => {
@@ -37,9 +37,8 @@ const GamePage = () => {
 
   const handleLogoutClick = async () => {
     try {
-      document.cookie = "username=; path=/; max-age=0;";
-      await userLogout();
-      navigate("/login");
+      saveScore();
+      navigate('/homepage');
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -49,113 +48,102 @@ const GamePage = () => {
     try {
       const response = await axios.get('https://marcconrad.com/uob/banana/api.php?out=json&base64=yes');
       const imageData = response.data.question;
-      setPuzzleImage(`data:image/jpeg;base64,${imageData}`);
-
       const apiNumber = parseInt(response.data.solution, 10);
+
+      setPuzzleImage(`data:image/jpeg;base64,${imageData}`);
       setSolution(apiNumber);
-
       generateOptions(apiNumber);
-
-      setKey(prevKey => prevKey + 1); 
+      setKey((prevKey) => prevKey + 1);
     } catch (error) {
       console.error("Error fetching puzzle image:", error);
     }
   };
 
   useEffect(() => {
-    fetchNewPuzzle(); 
+    fetchNewPuzzle();
   }, []);
-
-  const handleTimeUp = () => {
-    if (!timeUp) {
-      setButtonsDisabled(true);
-      setFeedbackMessage("Time's up!");
-      setIsTimeUpModalVisible(true);
-      setTimeUp(true); 
-      saveScore(); 
-    }
-  };
-
-  const saveScore = async () => {
-    const username = getLoggedInUsername();
-    if (username) {
-      try {
-        await  savePlayerScore(username, score);;
-        console.log('Score saved successfully!');
-      } catch (error) {
-        console.error("Error saving score:", error.message);
-      }
-    } else {
-      console.error("No logged-in username found.");
-    }
-  };
-
-  const closeTimeUpModal = () => {
-    setIsTimeUpModalVisible(false);
-  };
-
-  const closeWrongAnswerModal = () => {
-    setIsWrongAnswerModalVisible(false);
-    setTimerPaused(false);
-  };
-
-  const handleOptionClick = (selectedOption) => {
-    if (selectedOption === solution) {
-      const calculatedScore = 100 + (50 * attempts); 
-      setScore(prevScore => prevScore + calculatedScore);
-      setFeedbackMessage("Correct answer!");
-
-      setButtonsDisabled(true);
-
-      setAttempts(3);
-      setIsWrongAnswerModalVisible(false);
-
-      setTimeout(() => {
-        fetchNewPuzzle();
-        setButtonsDisabled(false); 
-        setTimeUp(false); 
-        setTimerPaused(false); 
-        setFeedbackMessage(''); 
-      }, 1000); 
-    } else {
-      setFeedbackMessage("Wrong answer. Try again!");
-      setAttempts((prevAttempts) => prevAttempts - 1);
-      if (attempts - 1 <= 0) {
-        setButtonsDisabled(true);
-        setFeedbackMessage("No more attempts left.");
-        saveScore();
-      }
-      setIsWrongAnswerModalVisible(true);
-      setTimerPaused(true);
-    }
-  };
 
   const generateOptions = (apiNumber) => {
     const randomNumbers = new Set();
-
     while (randomNumbers.size < 4) {
       const randNum = Math.floor(Math.random() * 10);
       if (randNum !== apiNumber) {
         randomNumbers.add(randNum);
       }
     }
+    const optionsArray = [...randomNumbers, apiNumber].sort(() => Math.random() - 0.5);
+    setOptions(optionsArray);
+  };
 
-    const optionsArray = [...randomNumbers, apiNumber];
-    const shuffledOptions = optionsArray.sort(() => Math.random() - 0.5);
-    setOptions(shuffledOptions);
+  const saveScore = async () => {
+    const username = getLoggedInUsername();
+    if (username) {
+      try {
+        await savePlayerScore(username, score);
+        console.log('Score saved successfully!');
+      } catch (error) {
+        console.error("Error saving score:", error.message);
+      }
+    }
+  };
+
+  const handleTimeUp = () => {
+    setButtonsDisabled(true);
+    setFeedbackMessage("Time's up!");
+    setTimerPaused(true);
+    setIsTimeUpModalVisible(true);
+    saveScore();
+  };
+
+  const handleCorrectOption = () => {
+    const calculatedScore = 100 + (50 * attempts);
+    setScore((prevScore) => prevScore + calculatedScore);
+    setFeedbackMessage("Correct answer!");
+    setButtonsDisabled(true);
+
+    setTimeout(() => {
+      fetchNewPuzzle();
+      setButtonsDisabled(false);
+      setTimerPaused(false);
+      setFeedbackMessage('');
+      setAttempts(3);
+    }, 1000);
+  };
+
+  const handleIncorrectOption = () => {
+    setFeedbackMessage("Wrong answer. Try again!");
+    setAttempts((prevAttempts) => prevAttempts - 1);
+    setTimerPaused(true);
+
+    if (attempts - 1 <= 0) {
+      setButtonsDisabled(true);
+      setFeedbackMessage("Game Over!");
+      setIsTimeUpModalVisible(false); 
+      setIsWrongAnswerModalVisible(false);
+      setIsTimeUpModalVisible(true); 
+      saveScore();
+    } else {
+      setIsWrongAnswerModalVisible(true);
+    }
+  };
+
+  const handleOptionClick = (selectedOption) => {
+    selectedOption === solution ? handleCorrectOption() : handleIncorrectOption();
+  };
+
+  const handlePlayAgain = () => {
+    window.location.reload();
   };
 
   const openLeaderboard = async () => {
     try {
       setTimerPaused(true);
-  
-      const response = await getLeaderBoardScores();
-  
-      setLeaderboardData(response);
-      setIsLeaderboardVisible(true); 
+      const data = await getLeaderBoardScores();
+      setLeaderboardData(data);
+      setIsLeaderboardVisible(true);
     } catch (error) {
       console.error("Error fetching leaderboard data:", error.message);
-      setLeaderboardData([]); 
+      setLeaderboardData([]);
     }
   };
 
@@ -164,24 +152,29 @@ const GamePage = () => {
     setTimerPaused(false);
   };
 
+  const closeWrongAnswerModal = () => {
+    setIsWrongAnswerModalVisible(false);
+    setTimerPaused(false); 
+  };
+
   return (
     <div className="game-page">
       <header className="game-header">
-        <div className="icon left-icon" onClick={openLeaderboard}>🏅</div> 
+        <div className="icon left-icon" onClick={openLeaderboard}>🏅</div>
         <div className="icon right-icon">
           {Array.from({ length: attempts }).map((_, index) => (
-            <span key={index} className="heart">❤️</span> 
+            <span key={index} className="heart">❤️</span>
           ))}
         </div>
       </header>
 
       {puzzleImage ? (
         <div className="puzzle-container">
-          <Timer 
-            initialTime={30} 
-            onTimeUp={handleTimeUp} 
-            pause={timerPaused} 
-            key={key} 
+          <Timer
+            initialTime={30}
+            onTimeUp={handleTimeUp}
+            pause={timerPaused}
+            key={key}
           />
           <img src={puzzleImage} alt="Puzzle" className="puzzle-image" />
         </div>
@@ -189,19 +182,14 @@ const GamePage = () => {
         <p>Loading puzzle...</p>
       )}
 
-      <div className="feedback-message">
-        {feedbackMessage}
-      </div>
+      <div className="feedback-message">{feedbackMessage}</div>
 
       <div className="current-score">
-        <h3>Score: {score}</h3> 
+        <h3>Score: {score}</h3>
       </div>
 
       <div className="navigation-buttons">
-      <button 
-        className="button back-button"
-        onClick={handleLogoutClick}>EXIT
-      </button>
+        <button className="button back-button" onClick={handleLogoutClick}>EXIT</button>
         <div className="options">
           {options.map((option, index) => (
             <button
@@ -217,18 +205,25 @@ const GamePage = () => {
       </div>
 
       {isTimeUpModalVisible && (
-        <MessagePopupModal message="Time's up!" onClose={closeTimeUpModal} />
+        <MessagePopupModal
+          message={feedbackMessage}  // Using the updated feedback message
+          onClose={() => navigate('/homepage')}
+          onPlayAgain={handlePlayAgain}
+        />
       )}
 
       {isWrongAnswerModalVisible && (
-        <MessagePopupModal message="Wrong answer. Try again!" onClose={closeWrongAnswerModal} />
+        <MessagePopupModal
+          message="Wrong answer. Try again!"
+          onClose={closeWrongAnswerModal}
+        />
       )}
 
       {isLeaderboardVisible && (
-        <LeaderboardModal 
-          data={leaderboardData} 
-          isOpen={isLeaderboardVisible} 
-          onClose={closeLeaderboard} 
+        <LeaderboardModal
+          data={leaderboardData}
+          isOpen={isLeaderboardVisible}
+          onClose={closeLeaderboard}
         />
       )}
     </div>

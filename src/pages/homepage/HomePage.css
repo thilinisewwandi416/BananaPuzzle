@@ -2,27 +2,27 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-items: start; 
+  justify-items: start;
   position: relative;
   height: 100vh;
   background-size: cover;
   background-image: url('../../assets/homepage.png');
-  background-position: center; 
-  background-repeat: no-repeat; 
-  padding: 0 5%;  
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0 5%;
 }
 
 .character {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-left: 35%; 
+  margin-left: 35%;
   position: relative;
 }
 
 .character img {
   width: 100%;
-  max-width: 380px; 
+  max-width: 380px;
 }
 
 .bubble {
@@ -47,7 +47,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 15px;
-  margin-left: 20%; 
+  margin-left: 20%;
   max-width: 250px;
 }
 
@@ -62,22 +62,20 @@
 }
 
 .play {
-  background-color: #8cd3e6;
+  background-color: #8cd3e6 !important;
 }
 
 .instructions {
-  background-color: #ffb447;
+  background-color: #ffb447 !important;
 }
 
 .exit {
-  background-color: #ff6b6b;
+  background-color: #ff6b6b !important;
 }
-
-
 
 @media (max-width: 768px) {
   .homepage {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     padding: 20px;
   }
 
