@@ -6,7 +6,7 @@
   position: relative;
   height: 100vh;
   background-size: cover;
-  background-image: url('../../assets/homepage.png');
+  background-image: url('https://i.imghippo.com/files/ngI7217QSg.png');
   background-position: center;
   background-repeat: no-repeat;
   padding: 0 5%;
@@ -51,13 +51,13 @@
   max-width: 250px;
 }
 
-.button {
-  padding: 15px 40px;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  color: white;
-  font-weight: bold;
+.buttons button {
+  width: 200px; /* Set a fixed width */
+  height: 50px; /* Set a fixed height */
+  text-align: center; /* Centers text within the button */
+  font-size: 16px; /* Adjust text size as needed */
   border: none;
+  border-radius: 5px; /* Optional: adds rounded corners */
   cursor: pointer;
 }
 
