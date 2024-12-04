@@ -5,8 +5,8 @@ const HowToPlayModal = ({ isVisible, onClose }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="howtoplaymodal-overlay">
+      <div className="howtoplaymodalmodal-content">
         <h2>Instructions for the Banana Puzzle</h2>
         <p>Welcome to the Banana Puzzle! Refer below instructions to play the game:</p>
         <ul>
@@ -16,7 +16,7 @@ const HowToPlayModal = ({ isVisible, onClose }) => {
           <li>You can choose answer from the given 5 options.</li>
           <li>Once you completed a level, next level will load.</li>
         </ul>
-        <button className="close-button" onClick={onClose}>
+        <button className="howtoplaymodalclose-button" onClick={onClose}>
           Close
         </button>
       </div>

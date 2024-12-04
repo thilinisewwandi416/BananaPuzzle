@@ -6,7 +6,7 @@ const createApiInstance = (baseURL) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    timeout: 60000, 
+    timeout: 60000, //session will timeout while response getting delay
   });
 };
 

@@ -8,6 +8,7 @@ import './GamePage.css';
 import { getLeaderBoardScores, savePlayerScore } from '../../APIs/apiEndpoints';
 import Cookies from 'js-cookie';
 
+//generated using LLM - https://chatgpt.com/
 const GamePage = () => {
   const [puzzleImage, setPuzzleImage] = useState(null);
   const [options, setOptions] = useState([]);
@@ -115,7 +116,7 @@ const GamePage = () => {
     setAttempts((prevAttempts) => prevAttempts - 1);
     setTimerPaused(true);
 
-    if (attempts - 1 <= 0) {
+    if (attempts - 1 <= 0) {  
       setButtonsDisabled(true);
       setFeedbackMessage("Game Over!");
       setIsTimeUpModalVisible(false); 

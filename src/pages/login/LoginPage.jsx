@@ -17,8 +17,10 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
 
+    //https://www.w3schools.com/js/js_cookies.asp
+
     try {
-      document.cookie = `username=${encodeURIComponent(username)}; path=/; max-age=86400;`;
+      document.cookie = `username=${encodeURIComponent(username)}; path=/; max-age=86400;`; //set cookies
       const response = await userLogin(username, password);
       navigate('/homepage');
     } catch (err) {
